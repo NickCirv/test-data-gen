@@ -1,0 +1,32 @@
+{
+  "name": "test-data-gen",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Generate realistic test data — names, emails, addresses, UUIDs — zero dependencies, no faker.js needed",
+  "bin": {
+    "test-data-gen": "./index.js",
+    "tdg": "./index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "developer-tools",
+    "cli",
+    "nodejs",
+    "zero-dependencies",
+    "test-data",
+    "faker",
+    "mock-data",
+    "fixtures"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NickCirv/test-data-gen.git"
+  },
+  "homepage": "https://github.com/NickCirv/test-data-gen#readme",
+  "bugs": {
+    "url": "https://github.com/NickCirv/test-data-gen/issues"
+  }
+}
