@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # test-data-gen
 
 > Generate realistic test data — names, emails, addresses, UUIDs — zero dependencies, no faker.js needed.
