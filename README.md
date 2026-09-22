@@ -1,159 +1,84 @@
-![test-data-gen — generate realistic test data with zero dependencies](assets/banner.png)
+![test-data-gen — Nicholas Ashkar editorial artwork](assets/nicholas-ashkar/banner.png)
 
-<div align="center">
+# test-data-gen
 
-**Realistic users, addresses, UUIDs, dates, and more — zero dependencies, no faker.js needed.**
+Generate synthetic fixture data for local development and test inputs.
 
-![license](https://img.shields.io/badge/license-MIT-blue?labelColor=0B0A09)
-![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?labelColor=0B0A09)
-![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?labelColor=0B0A09)
-![commands](https://img.shields.io/badge/commands-7-8B92F6?labelColor=0B0A09)
+Provides user, address, date, UUID, text and other generators, plus custom templates and a subset of JSON Schema generation. Outputs JSON, CSV or SQL text.
 
-</div>
 
----
+<a id="install"></a>
 
-Pull in `faker.js` and you've added 3 MB of dependency to your dev toolchain. `test-data-gen` gives you realistic users, addresses, UUIDs, dates, Luhn-valid credit cards, and JSON Schema-driven records from a single `index.js` file — using nothing but Node's built-in `crypto` module.
+## Quickstart
 
-```
-$ npx github:NickCirv/test-data-gen user --count 3
-[
-  {
-    "id": "a3f2b1c4-7e9d-4c1a-b8f2-3d5e6a7b8c9d",
-    "name": "Priya Martinez",
-    "email": "priya.martinez@example.com",
-    "phone": "+1-415-302-7841",
-    "createdAt": "2021-04-13T08:22:00.000Z"
-  },
-  ...
-]
-```
-
-## Install
-
-No npm account, no global install — run straight from GitHub:
+Package runtime requirement: Node.js `>=20`. Git is needed to obtain this pinned source checkout.
 
 ```bash
-npx github:NickCirv/test-data-gen
+git clone https://github.com/NickCirv/test-data-gen.git
+cd test-data-gen
+git checkout ddaf01937494c41b8c8a1f950d003bf02f1d56b5
+node index.js user --count 2 --seed 42 --from 2020-01-01 --to 2020-12-31
 ```
+
+This source-derived example has not been executed in this review. The example requests two synthetic user records with bounded dates. It is not real customer data or a captured output sample.
+
+
+
+
+
+
+
+<a id="commands"></a>
+
+<a id="options"></a>
+
+<a id="output-formats"></a>
+
+<a id="deterministic-output"></a>
+
+<a id="custom-templates"></a>
+
+<a id="json-schema-generation"></a>
 
 ## Usage
 
 ```bash
-# full binary name
-test-data-gen <command> [options]
-
-# shorthand alias
-tdg <command> [options]
+node index.js uuid --count 3 --seed 42
+node index.js user --count 5 --format csv
+node index.js custom '{{name}} <{{email}}>'
+node index.js from-schema schema.json --count 3
 ```
 
-## Commands
+`--stream` emits continuously until stopped. `--table` selects the SQL table name; output is text and is not applied to a database.
 
-| Command | What it generates |
-|---------|-------------------|
-| `user` | id, name, email, phone, createdAt |
-| `address` | street, city, state, zip (50 US cities) |
-| `uuid` | UUID v4 (crypto-backed) |
-| `date` | ISO datetime within a date range |
-| `credit-card` | Luhn-valid Visa test numbers only |
-| `custom` | Free-form template with `{{tokens}}` |
-| `from-schema` | Records matching a JSON Schema file |
+[Command reference](docs/REFERENCE.md) covers arguments, modes and output controls.
 
-## Options
 
-| Flag | Short | Default | Description |
-|------|-------|---------|-------------|
-| `--count` | `-n` | `1` | Number of records to generate |
-| `--format` | `-f` | `json` | Output format: `json`, `csv`, `sql` |
-| `--table` | `-t` | `records` | SQL table name (used with `--format sql`) |
-| `--seed` | `-s` | random | Seed for deterministic, reproducible output |
-| `--from` | | | Start date for range (YYYY-MM-DD) |
-| `--to` | | | End date for range (YYYY-MM-DD) |
-| `--stream` | | | Emit records continuously (Ctrl+C to stop) |
-| `--help` | `-h` | | Show help |
 
-## Output Formats
+<a id="security-notes"></a>
 
-```bash
-# JSON (default)
-tdg user --count 5
+<a id="what-it-is-not"></a>
 
-# CSV — pipe straight to a file
-tdg user --count 100 --format csv > users.csv
+## Behavior and limits
 
-# SQL INSERT statements
-tdg user --count 10 --format sql --table app_users
-# INSERT INTO app_users (id, name, email, phone, createdAt) VALUES (...);
-```
+A seed controls the pseudorandom generator, but date defaults that depend on the current time can change output unless dates are fixed. Values are not statistically representative or guaranteed unique. SQL identifiers/templates require trusted input and review before execution. Generated payment-looking values are for fixtures only; no payment-provider acceptance or cryptographic suitability is established.
 
-## Deterministic Output
+## Development
 
-Use `--seed` for reproducible fixtures — same seed, same data, every time:
+Declared package scripts:
 
-```bash
-tdg user --count 5 --seed 42
-```
+| Script | Command |
+| --- | --- |
+| `test` | `node --test` |
 
-## Custom Templates
+The smoke test syntax-checks the entrypoint; it does not exercise CLI behavior or integrations.
 
-Build any string format using `{{tokens}}`:
+## Research
 
-```bash
-tdg custom "{{name}} <{{email}}>" --count 3
-# Hiroshi Webb <hiroshi.webb@test.io>
+[Source review and claim ledger](docs/RESEARCH.md) records revision `ddaf01937494`, inspected files and verification gaps.
 
-tdg custom "User {{int:1-1000}} joined on {{date}}" --count 5
-```
+## License and attribution
 
-| Token | Output |
-|-------|--------|
-| `{{name}}` | Full name |
-| `{{email}}` | Email address |
-| `{{uuid}}` | UUID v4 |
-| `{{phone}}` | US phone number |
-| `{{date}}` | ISO datetime |
-| `{{word}}` | Random word |
-| `{{sentence}}` | Random sentence |
-| `{{int:1-100}}` | Integer in range |
+Protected license and attribution files remain unchanged: [LICENSE](https://github.com/NickCirv/test-data-gen/blob/ddaf01937494c41b8c8a1f950d003bf02f1d56b5/LICENSE).
 
-## JSON Schema Generation
-
-Generate records matching any JSON Schema:
-
-```bash
-tdg from-schema schema.json --count 10
-```
-
-```json
-{
-  "type": "object",
-  "required": ["id", "email", "age"],
-  "properties": {
-    "id": { "type": "string", "format": "uuid" },
-    "email": { "type": "string", "format": "email" },
-    "age": { "type": "integer", "minimum": 18, "maximum": 80 },
-    "active": { "type": "boolean" }
-  }
-}
-```
-
-Supported types: `string` (with `format`: `uuid`, `email`, `date-time`, `date`), `integer`, `number`, `boolean`, `array`, `object`, `null`, `enum`, `oneOf`, `anyOf`.
-
-## Security Notes
-
-- Credit cards use **known test BINs only** (Visa `4111...` family) — Luhn-valid, never real
-- All randomness uses `crypto.randomBytes()` — not `Math.random()`
-- Email domains are safe test-only: `example.com`, `test.io`, `mockmail.io`, etc.
-- No real people's data — names drawn from common name lists
-
-## What it is NOT
-
-- **Not a production data faker.** It generates test fixtures for development and CI — not representative samples for analytics or load testing at scale.
-- **Not a schema validator.** `from-schema` generates plausible data; it does not enforce every JSON Schema constraint (e.g. `uniqueItems`, `pattern`).
-- **Not a replacement for a database seed file.** For complex relational fixtures with foreign-key integrity, you still need a seed script — this tool feeds the raw data into it.
-
----
-
-<div align="center">
-<sub>Zero dependencies · Node 18+ · MIT · by <a href="https://github.com/NickCirv">NickCirv</a></sub>
-</div>
+[Artwork credits](assets/nicholas-ashkar/CREDITS.md) · [Nicholas Ashkar — consulting](https://nicholashkar.com/#oxblood-contact)
